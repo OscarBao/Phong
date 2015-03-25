@@ -64,46 +64,28 @@ public void start(Stage primaryStage) {
         if(dist <= radius) {
           z = Math.sqrt(sqr(radius) - sqr(dist));
           
-          /*
-          lightPos[0] += centerX;
-          lightPos[1] += centerY;
-          */
+          
           double[] center = {centerX, centerY, 0};
           double[] point = {x + centerX, y + centerY, z};
           //computing all the vectors: 
           //normal, viewer, light
           double[] normal = betweenUV(center, point);
           double[] viewer = betweenUV(point, eye);
-          //printArray("  viewer", viewer);
-          double[] light = betweenUV(point, lightPos);
-          //printArray("  light", light);
-         /* 
-          try {
-            Thread.sleep(300);
-             System.out.println("x: " + x + "\ty: " + y);
-             printArray("  normal", normal);
           
-          }
-          catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-          }
-          */
+          double[] light = betweenUV(point, lightPos);
+          
           //compute the reflection vector
           double[] reflection = uv(reflectVect(light, normal));
           //compute individual formulae
           double[] ambRGB = ambient(ka, lightCol);
           double[] diffRGB = diffuse(kd, light, normal, lightCol);
-          //printArray("diffRGB", diffRGB);
+          
           double[] specRGB = specular(ks, reflection, viewer, lightCol, specPow);
           
           double[] illumination = new double[3];
-          /*for(int i = 0; i < 3; i++ ) {
-            illumination[i] = ambRGB[i] + diffRGB[i] + specRGB[i];
-            //illumination[i] = Math.max(0, illumination[i]);
-            //illumination[i] = Math.min(1, illumination[i]);
-          }*/
+          
           illumination = arrSum(new double[][]{ambRGB, diffRGB, specRGB});
-          //pixelWrite.setColor((int)(x + centerX), (int)(y + centerY), new Color(0.0, 0.0, 0.0, 1.0));
+          
 
           pixelWrite.setColor((int)(x + centerX), (int)(y + centerY), 
                               new Color(illumination[0], 
